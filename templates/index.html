@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Chatbot</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #7f00ff, #e100ff);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .chatbot-container {
+            background: #ffffff;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            height: 70%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: #7f00ff;
+            padding: 15px;
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .back-arrow {
+            position: absolute;
+            left: 560px;
+            cursor: pointer;
+            display: none;  /* Initially hide the back arrow */
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-message {
+            margin: 10px 0;
+            max-width: 80%;
+            padding: 10px;
+            border-radius: 10px;
+            word-wrap: break-word;
+        }
+
+        .bot-message {
+            background: #7f00ff;
+            color: white;
+            align-self: flex-start;
+        }
+
+        .user-message {
+            background: #e100ff;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .chat-footer {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.05);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-footer input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .chat-footer button {
+            background: #7f00ff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .chat-footer button:hover {
+            background: #e100ff;
+        }
+
+        .option-button {
+            background: #e100ff;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .option-button:hover {
+            background: #7f00ff;
+        }
+        .chat-header {
+    background: #7f00ff;
+    padding: 15px;
+    text-align: center;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Ensure the logo is positioned relative to this container */
+}
+
+.logo {
+    position: absolute;
+    left: 15px;  /* Adjust this value to move the logo further from the left */
+    top: 50%;  /* Centers the logo vertically */
+    transform: translateY(-50%);  /* Ensures exact centering */
+    height: 40px;  /* Adjust the height to your preference */
+    width: auto;  /* Maintains aspect ratio */
+}
+.footer {
+    background: #7f00ff;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+
+.footer p {
+    margin: 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="chat-header" id="chat-header"style="bottom: 350px;right: 440px;">
+        <img src="{{url_for('static',filename='bunny.jpg')}}" alt="Food Chatbot Logo" class="logo">  
+        food CHEF-BOT
+
+        <span id="back-arrow" class="back-arrow" onclick="goBack()">&larr;</span>
+    </div>
+    <div class="chatbot-container">
+        <div class="chat-header" id="chat-header">
+            CHEF-BOT
+            <span id="back-arrow" class="back-arrow" onclick="goBack()">&larr;</span>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="chat-message bot-message">
+                Hello! How can I assist you today?
+            </div>
+            <div class="chat-message bot-message">
+                <button class="option-button" onclick="handleOption('Recipe Recommendations')">Recipe Recommendations</button><br>
+                <button class="option-button" onclick="handleOption('Calorie Tracking')">Calorie Tracking</button><br>
+                <button class="option-button" onclick="handleOption('Restaurant Suggestions')">Restaurant Suggestions</button><br>
+            </div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="user-input" placeholder="Type your message..." disabled>
+            <button onclick="sendMessage()" disabled>Send</button>
+        </div>
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 CHEF-BOT. All Rights Reserved.</p>
+        <p>Made by Nidhi Kulkarni</p>
+
+    </div>
+    
+
+    <script>
+        let currentOption = "";  // To store the current selected option
+        let previousMenu = false;  // Flag to track if we're in the options menu or not
+
+        function handleOption(option) {
+            currentOption = option;
+            const chatBody = document.getElementById('chat-body');
+            const botMessage = document.createElement('div');
+            botMessage.className = 'chat-message bot-message';
+
+            // Show back arrow
+            document.getElementById('back-arrow').style.display = 'inline';
+
+            // Send selected option to the backend
+            botMessage.textContent = "Press ok to continue .";
+            chatBody.appendChild(botMessage);
+
+            document.getElementById('user-input').disabled = false;
+            document.querySelector('button').disabled = false;
+            document.getElementById('user-input').focus();
+
+            // Change state to menu view
+            previousMenu = true;
+        }
+
+        function sendMessage() {
+    const chatBody = document.getElementById('chat-body');
+    const userInput = document.getElementById('user-input').value;
+
+    // If user input is empty, return early
+    if (userInput.trim() === '') return;
+
+    // Display the user's message
+    const userMessage = document.createElement('div');
+    userMessage.className = 'chat-message user-message';
+    userMessage.textContent = userInput;
+    chatBody.appendChild(userMessage);
+
+    // Clear the input field and scroll chat to the bottom
+    document.getElementById('user-input').value = '';
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    // Display the bot's "Please wait..." message while processing the request
+    const botMessage = document.createElement('div');
+    botMessage.className = 'chat-message bot-message';
+    botMessage.textContent = "Please wait while I get your response...";
+    chatBody.appendChild(botMessage);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    // Send the user input and selected option to the backend
+    const data = {
+        message: userInput,
+        option: currentOption // Include the selected option
+    };
+
+    fetch('/chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Remove the "Please wait..." message
+            chatBody.removeChild(botMessage);
+
+            // Handle multiple replies from the backend
+            if (Array.isArray(data.reply)) {
+                data.reply.forEach(replyText => {
+                    const responseMessage = document.createElement('div');
+                    responseMessage.className = 'chat-message bot-message';
+                    responseMessage.innerHTML = replyText;
+                    chatBody.appendChild(responseMessage);
+                });
+            } else {
+                // Handle a single reply as fallback
+                const responseMessage = document.createElement('div');
+                responseMessage.className = 'chat-message bot-message';
+                responseMessage.innerHTML = data.reply;
+                chatBody.appendChild(responseMessage);
+            }
+
+            chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(error => {
+            // Handle errors
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'chat-message bot-message';
+            errorMessage.textContent = "Sorry, there was an error processing your request.";
+            chatBody.appendChild(errorMessage);
+        });
+}
+
+
+        // Function to show the previous menu options
+        function goBack() {
+            const chatBody = document.getElementById('chat-body');
+            chatBody.innerHTML = ''; // Clear the current messages
+
+            // Add the original options
+            const botMessage = document.createElement('div');
+            botMessage.className = 'chat-message bot-message';
+            botMessage.textContent = 'Hello! How can I assist you today?';
+            chatBody.appendChild(botMessage);
+
+            const optionsMessage = document.createElement('div');
+            optionsMessage.className = 'chat-message bot-message';
+            optionsMessage.innerHTML = `
+                <button class="option-button" onclick="handleOption('Recipe Recommendations')">Recipe Recommendations</button><br>
+                <button class="option-button" onclick="handleOption('Calorie Tracking')">Calorie Tracking</button><br>
+                <button class="option-button" onclick="handleOption('Restaurant Suggestions')">Restaurant Suggestions</button><br>
+            `;
+            chatBody.appendChild(optionsMessage);
+
+            // Hide back arrow when going back
+            document.getElementById('back-arrow').style.display = 'none';
+        }
+
+        // Enable 'Enter' key to send the message
+        document.getElementById('user-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+
+</body>
+</html>

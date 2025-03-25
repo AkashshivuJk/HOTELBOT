@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animated Bunny</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f9;
+    }
+    .container {
+      text-align: center;
+      width: 200px;
+      height: 200px;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .container img {
+      width: 100%;
+      height: auto;
+    }
+    .waiting img {
+      animation: shake 2s infinite;
+    }
+    .thinking img {
+      animation: blink 1.5s infinite;
+    }
+    .happy img {
+      animation: bounce 1s infinite;
+    }
+    .confused img {
+      animation: wiggle 1.5s infinite;
+    }
+    /* Animations */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    @keyframes blink {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0.5; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0); }
+      25% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container waiting">
+    <h3>Waiting</h3>
+    <img src="bunny.jpg" alt="Bunny Waiting">
+  </div>
+  <div class="container thinking">
+    <h3>Thinking</h3>
+    <img src="bunny.jpg" alt="Bunny Thinking">
+  </div>
+  <div class="container happy">
+    <h3>Happy</h3>
+    <img src="bunny.jpg" alt="Bunny Happy">
+  </div>
+  <div class="container confused">
+    <h3>Confused</h3>
+    <img src="bunny.jpg" alt="Bunny Confused">
+  </div>
+</body>
+</html>
